@@ -12,10 +12,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Ensure public directory exists
+        run: mkdir -p public
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # Installs dependencies required to execute Zoner binaries
+          dotnet-version: '8.0.x' 
 
       - name: Build Blog with Zoner
         run: |
@@ -23,8 +26,7 @@ jobs:
           ./zoner -i blog -o public
 
       - name: Deploy to Nekoweb
-        uses: indiefellas/deploy2nekoweb@v1
+        uses: indiefellas/deploy2nekoweb@main  # Changed from @v1 to @main
         with:
-          api_token: ${{ secrets.NEKOWEB_API_TOKEN }}
-          folder: 'public'
-
+          nekoweb-api-key: ${{ secrets.NEKOWEB_API_TOKEN }} # Updated configuration names
+          directory: './public'
