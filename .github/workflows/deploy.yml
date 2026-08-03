@@ -1,0 +1,30 @@
+name: Run Zoner and Push to Nekoweb
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # Installs dependencies required to execute Zoner binaries
+
+      - name: Build Blog with Zoner
+        run: |
+          chmod +x ./zoner
+          ./zoner -i blog -o public
+
+      - name: Deploy to Nekoweb
+        uses: indiefellas/deploy2nekoweb@v1
+        with:
+          api_token: ${{ secrets.NEKOWEB_API_TOKEN }}
+          folder: 'public'
+
